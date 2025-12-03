@@ -1,4 +1,4 @@
-package com.spotify.playlist_api.infrastructure.controllers.dto;
+package com.spotify.playlist_api.infrastructure.controllers.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
@@ -25,25 +25,4 @@ public class PlaylistRequest {
     private List<SongRequest> canciones;
 }
 
-@Data
-class SongRequest {
 
-    @NotBlank(message = "El título es obligatorio")
-    @Size(min = 1, max = 200, message = "El título debe tener entre 1 y 200 caracteres")
-    private String titulo;
-
-    @NotBlank(message = "El artista es obligatorio")
-    @Size(min = 1, max = 200, message = "El artista debe tener entre 1 y 200 caracteres")
-    private String artista;
-
-    @NotBlank(message = "El álbum es obligatorio")
-    @Size(min = 1, max = 200, message = "El álbum debe tener entre 1 y 200 caracteres")
-    private String album;
-
-    @NotBlank(message = "El año es obligatorio")
-    @JsonProperty("year")
-    private String year;
-
-    @NotBlank(message = "El género es obligatorio")
-    private String genero;
-}

@@ -1,4 +1,4 @@
-package com.spotify.playlist_api.infrastructure.controllers.dto;
+package com.spotify.playlist_api.infrastructure.controllers.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -18,17 +18,4 @@ public class PlaylistResponse {
     private String creadoPor;
     private Instant createdAt;
     private Instant updatedAt;
-}
-
-@Data
-@Builder
-class SongResponse {
-    private String titulo;
-    private String artista;
-    private String album;
-
-    @JsonProperty("year")
-    private String year;
-
-    private String genero;
 }

@@ -1,4 +1,4 @@
-package com.spotify.playlist_api.infrastructure.controllers.dto;
+package com.spotify.playlist_api.infrastructure.controllers.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

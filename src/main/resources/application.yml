@@ -4,7 +4,7 @@ spring:
 
   # H2 Database (Runtime - como solicita el ejercicio)
   datasource:
-    url: jdbc:h2:mem:playlistdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:playlistdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -18,16 +18,23 @@ spring:
         trace: false
         web-allow-others: false
 
-  # JPA Configuration
+  # JPA Configuration - ¡ESTAS 2 LÍNEAS SON CLAVE!
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true  # ← Ejecuta data.sql DESPUÉS de crear tablas
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop  # ← Cambiado de 'update' a 'create-drop' para desarrollo
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
+        # dialect: org.hibernate.dialect.H2Dialect  # ← COMENTADO (Spring Boot lo detecta automáticamente)
+
+  # SQL Initialization Configuration - ¡IMPORTANTE!
+  sql:
+    init:
+      mode: always  # ← Siempre ejecutar data.sql
+      continue-on-error: true  # ← Continuar si hay error
+      platform: h2  # ← Especifica que es para H2
 
   # Jackson Configuration
   jackson:
@@ -45,19 +52,16 @@ spring:
 
 # JWT Configuration
 jwt:
-  secret: "c3VwZXJTZWNyZXRLZXlXaXRoQXRMZWFzdDMyQ2hhcmFjdGVyc0xvbmcxMjMh" # Base64
-  # Texto plano: superSecretKeyWithAtLeast32CharactersLong123!
-  expiration: 86400000 # 24 horas
+  secret: "c3VwZXJTZWNyZXRLZXlXaXRoQXRMZWFzdDMyQ2hhcmFjdGVyc0xvbmcxMjMh"
+  expiration: 86400000
 
 # Spotify API Configuration
 spotify:
-  client:
-    id: ${SPOTIFY_CLIENT_ID:test_client_id}
-    secret: ${SPOTIFY_CLIENT_SECRET:test_client_secret}
-  api:
-    token-url: https://accounts.spotify.com/api/token
-    genres-url: https://api.spotify.com/v1/recommendations/available-genre-seeds
-    timeout: 5000
+  client-id: ${SPOTIFY_CLIENT_ID:test_client_id}
+  client-secret: ${SPOTIFY_CLIENT_SECRET:test_client_secret}
+  token-url: https://accounts.spotify.com/api/token
+  genres-url: https://api.spotify.com/v1/recommendations/available-genre-seeds
+  timeout: 5000
 
 # Server Configuration
 server:
@@ -70,15 +74,17 @@ server:
     include-message: always
     include-binding-errors: always
 
-# Logging
+# Logging - AÑADIDO PARA DEBUG
 logging:
   level:
     root: INFO
-    com.spotify.playlist: DEBUG
+    com.spotify.playlist_api: DEBUG  # ← Cambiado de 'playlist' a 'playlist_api'
     org.springframework.security: INFO
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.jdbc.datasource.init: DEBUG  # ← Para ver ejecución de SQL
+    org.springframework.boot.autoconfigure.jdbc: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %-5level [%thread] %logger{36} - %msg%n"
 
