@@ -1,0 +1,94 @@
+spring:
+  application:
+    name: spotify-playlist-api
+
+  # H2 Database (Runtime - como solicita el ejercicio)
+  datasource:
+    url: jdbc:h2:mem:playlistdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # H2 Console
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
+
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+  # Jackson Configuration
+  jackson:
+    default-property-inclusion: NON_NULL
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+  # WebClient Configuration for Spotify
+  webflux:
+    client:
+      max-memory-size: 10MB
+      response-timeout: 5s
+
+# JWT Configuration
+jwt:
+  secret: "c3VwZXJTZWNyZXRLZXlXaXRoQXRMZWFzdDMyQ2hhcmFjdGVyc0xvbmcxMjMh" # Base64
+  # Texto plano: superSecretKeyWithAtLeast32CharactersLong123!
+  expiration: 86400000 # 24 horas
+
+# Spotify API Configuration
+spotify:
+  client:
+    id: ${SPOTIFY_CLIENT_ID:test_client_id}
+    secret: ${SPOTIFY_CLIENT_SECRET:test_client_secret}
+  api:
+    token-url: https://accounts.spotify.com/api/token
+    genres-url: https://api.spotify.com/v1/recommendations/available-genre-seeds
+    timeout: 5000
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.spotify.playlist: DEBUG
+    org.springframework.security: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %-5level [%thread] %logger{36} - %msg%n"
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
