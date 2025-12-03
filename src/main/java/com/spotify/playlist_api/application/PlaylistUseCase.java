@@ -95,7 +95,6 @@ public class PlaylistUseCase {
                 .collect(Collectors.toList());
 
         return Playlist.builder()
-                .id(UUID.randomUUID())
                 .name(request.getNombre())
                 .description(request.getDescripcion())
                 .songs(songs)

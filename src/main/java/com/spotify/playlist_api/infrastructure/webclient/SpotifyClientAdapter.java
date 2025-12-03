@@ -89,7 +89,10 @@ public class  SpotifyClientAdapter implements SpotifyClientPort {
                     if (categories != null && categories.containsKey("items")) {
                         List<Map<String, Object>> items = (List<Map<String, Object>>) categories.get("items");
                         List<String> genres = items.stream()
-                                .map(item -> (String) item.get("id"))
+                                .map(item -> (String) item.get("name"))
+                                .filter(name -> name != null && !name.trim().isEmpty())
+                                .map(String::toLowerCase)  // ← Convertir a minúsculas AQUÍ
+                                .distinct()
                                 .collect(Collectors.toList());
                         log.info("✅ Categorías obtenidas: {} géneros disponibles", genres.size());
                         return genres;
